@@ -15,6 +15,8 @@ const roles = ["user", "admin"];
 
 const genderValues = ["male", "female"];
 
+const identityTypeValues = ["id_card", "driver_license", "passport"]
+
 /**
  * User Schema
  * @private
@@ -40,6 +42,10 @@ const userSchema = new mongoose.Schema(
       enum: roles,
       default: "user"
     },
+    emailVerify: {
+      type: Boolean,
+      default: false,
+    },
     personalInfo: {
       firstName: {
         type: String,
@@ -59,7 +65,8 @@ const userSchema = new mongoose.Schema(
       },
       identityType: {
         type: String,
-        default: null
+        default: null,
+        enum: identityTypeValues
       },
       nationality: {
         type: String,
