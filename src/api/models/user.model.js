@@ -90,11 +90,11 @@ const userSchema = new mongoose.Schema(
         type: String,
         default: null
       },
-      identityPictureWithPerson: {
+      identityPictureWithPersonPicture: {
         type: String,
         default: null
       },
-      proofOfAddress: {
+      proofOfAddressPicture: {
         type: String,
         default: null
       }
