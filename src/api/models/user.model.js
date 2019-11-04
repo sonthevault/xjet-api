@@ -76,6 +76,10 @@ const userSchema = new mongoose.Schema(
         type: String,
         default: "male",
         enum: genderValues
+      },
+      birthday: {
+        type: Date,
+        default: null
       }
     },
     documents: {
