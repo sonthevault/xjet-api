@@ -35,24 +35,10 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
       maxlength: 128
     },
-    name: {
-      type: String,
-      maxlength: 128,
-      index: true,
-      trim: true
-    },
-    services: {
-      facebook: String,
-      google: String
-    },
     role: {
       type: String,
       enum: roles,
       default: "user"
-    },
-    picture: {
-      type: String,
-      trim: true
     },
     personalInfo: {
       firstName: {
