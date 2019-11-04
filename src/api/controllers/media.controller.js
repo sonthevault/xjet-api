@@ -34,7 +34,6 @@ exports.create = async (req, res) => {
       name,
       type,
       url: fileUrl,
-      uploadBy: req.user.id
     });
     const result = await media.save();
 
