@@ -19,7 +19,7 @@ exports.create = async (req, res) => {
       fileUrl =
         (process.env.NODE_ENV === "development"
           ? req.protocol + "://" + req.get("host")
-          : process.env.BASE_URL) +
+          : process.env.API_URL) +
         "/public/" +
         uploadedFileName;
 
@@ -86,7 +86,7 @@ exports.update = async (req, res) => {
       fileUrl =
         (process.env.NODE_ENV === "development"
           ? req.protocol + "://" + req.get("host")
-          : process.env.BASE_URL) +
+          : process.env.API_URL) +
         "/public/" +
         uploadedFileName;
 
