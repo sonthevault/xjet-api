@@ -143,5 +143,8 @@ router.route('/facebook')
 router.route('/google')
   .post(validate(oAuth), oAuthLogin('google'), controller.oAuth);
 
+router.route('/confirmation/:token')
+  .get(controller.confirmEmail);
+
 
 module.exports = router;
