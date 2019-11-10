@@ -154,13 +154,13 @@ exports.confirmEmail = async (req, res, next) => {
       return res
         .status(400)
         .send({ message: "We were unable to find a user for this token." });
-    if (user.verifyEmail)
+    if (user.emailVerify)
       return res.status(400).send({
         message: "This user has already been verified."
       });
 
     // Verify and save the user
-    user.verifyEmail = true;
+    user.emailVerify = true;
     const updatedUser = await user.save();
     if (!updatedUser) {
       return res
