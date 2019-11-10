@@ -4,7 +4,8 @@ const mongoose = require("mongoose");
 const orderSchema = new mongoose.Schema(
   {
     email: { type: String, required: true },
-    userId: { type: String, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    xjetUserId: { type: String, required: true },
     amount: { type: Number, default: 0 },
     senderUsdtAddress: { type: String, required: true }
   },

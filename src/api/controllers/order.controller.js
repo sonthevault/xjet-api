@@ -9,7 +9,8 @@ const Order = require("../models/order.model");
  */
 exports.create = async (req, res, next) => {
   try {
-    const order = new Order(req.body);
+    console.log("req.user", req.user);
+    const order = new Order({...req.body, userId: req.user._id});
     const savedOrder = await order.save();
     res.status(httpStatus.CREATED);
     res.json(savedOrder.transform());

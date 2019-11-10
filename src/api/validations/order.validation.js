@@ -5,7 +5,7 @@ module.exports = {
   createOrder: {
     body: {
       email: Joi.string().email().required(),
-      userId: Joi.string().required(),
+      xjetUserId: Joi.string().required(),
       amount: Joi.number().required(),
       senderUsdtAddress: Joi.string().required(),
     },
