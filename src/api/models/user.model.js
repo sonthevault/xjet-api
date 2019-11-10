@@ -1,3 +1,5 @@
+/*eslint-disable */
+
 const mongoose = require("mongoose");
 const httpStatus = require("http-status");
 const { omitBy, isNil } = require("lodash");
@@ -13,9 +15,6 @@ const { env, jwtSecret, jwtExpirationInterval } = require("../../config/vars");
  */
 const roles = ["user", "admin"];
 
-const genderValues = ["male", "female"];
-
-const identityTypeValues = ["id_card", "driver_license", "passport"]
 
 /**
  * User Schema
@@ -30,6 +29,14 @@ const userSchema = new mongoose.Schema(
       unique: true,
       trim: true,
       lowercase: true
+    },
+    username: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
     },
     password: {
       type: String,
@@ -46,56 +53,6 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    personalInfo: {
-      firstName: {
-        type: String,
-        default: null
-      },
-      lastName: {
-        type: String,
-        default: null
-      },
-      address: {
-        type: String,
-        default: null
-      },
-      identityNumber: {
-        type: String,
-        default: null
-      },
-      identityType: {
-        type: String,
-        default: null,
-        enum: identityTypeValues
-      },
-      nationality: {
-        type: String,
-        default: null
-      },
-      gender: {
-        type: String,
-        default: "male",
-        enum: genderValues
-      },
-      birthday: {
-        type: Date,
-        default: null
-      }
-    },
-    documents: {
-      identityPicture: {
-        type: String,
-        default: null
-      },
-      identityPictureWithPersonPicture: {
-        type: String,
-        default: null
-      },
-      proofOfAddressPicture: {
-        type: String,
-        default: null
-      }
-    }
   },
   {
     timestamps: true
@@ -129,7 +86,7 @@ userSchema.pre("save", async function save(next) {
 userSchema.method({
   transform() {
     const transformed = {};
-    const fields = ["id", "name", "email", "picture", "role", "createdAt", "personalInfo", "documents"];
+    const fields = ["id", "username", "email", "phone", "role", "emailVerify" ];
 
     fields.forEach(field => {
       transformed[field] = this[field];
@@ -206,7 +163,12 @@ userSchema.statics = {
     };
     if (password) {
       if (user && (await user.passwordMatches(password))) {
-        return { user, accessToken: user.token() };
+        if (!user.emailVerify) {
+          err.message = "Email is not verified"; 
+          throw new APIError(err);
+        } else {
+          return { user, accessToken: user.token() };
+        }
       }
       err.message = "Incorrect email or password";
     } else if (refreshObject && refreshObject.userEmail === email) {
