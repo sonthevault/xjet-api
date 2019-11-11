@@ -9,5 +9,6 @@ const { authorize, ADMIN, LOGGED_USER } = require('../../middlewares/auth');
 router
   .post('/', authorize(), validate(createOrder), controller.create)
   .get('/', authorize(), controller.get)
+  .put('/', authorize(), controller.update)
 
 module.exports = router;

@@ -11,6 +11,7 @@ const orderSchema = new mongoose.Schema(
     amount: { type: Number, default: 0 },
     senderUsdtAddress: { type: String },
     senderBTCAddress: { type: String, required: true },
+    txHash: { type: String, default: null },
     status: { type: String, enum: OrderStatuses, default: "pending"}
   },
   {
@@ -24,7 +25,7 @@ const orderSchema = new mongoose.Schema(
 orderSchema.method({
   transform() {
     const transformed = {};
-    const fields = ["email", "userId", "amount", "senderUsdtAddress", "senderBTCAddress", "status"];
+    const fields = ["email", "userId", "xjetUserId", "amount", "senderUsdtAddress", "senderBTCAddress", "status", "txHash"];
 
     fields.forEach(field => {
       transformed[field] = this[field];

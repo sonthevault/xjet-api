@@ -40,3 +40,29 @@ exports.get = async (req, res, next) => {
     res.status(httpStatus.BAD_REQUEST);
   }
 };
+
+/**
+ * update user order
+ * @public
+ */
+exports.update = async (req, res, next) => {
+  try {
+    console.log("req.user", req.user);
+    const { txHash } = req.body
+    const order = await Order.findOne({ userId: req.user._id });
+    order.txHash = txHash;
+    const savedOrder = await order.save();
+    
+    if (savedOrder) {
+      res.status(httpStatus.OK);
+      res.json({ order: savedOrder.transform() });
+    } else {
+      res.status(httpStatus.OK);
+      res.json({ order: null });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(httpStatus.BAD_REQUEST);
+  }
+};
+
