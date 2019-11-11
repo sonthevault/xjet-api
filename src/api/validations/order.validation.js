@@ -7,7 +7,7 @@ module.exports = {
       email: Joi.string().email().required(),
       xjetUserId: Joi.string().required(),
       amount: Joi.number().required(),
-      senderUsdtAddress: Joi.string().required(),
+      senderBTCAddress: Joi.string().required(),
     },
   },
 
