@@ -7,6 +7,7 @@ const bcrypt = require("bcryptjs");
 const moment = require("moment-timezone");
 const jwt = require("jwt-simple");
 const uuidv4 = require("uuid/v4");
+const shortid = require("shortid");
 const APIError = require("../utils/APIError");
 const { env, jwtSecret, jwtExpirationInterval } = require("../../config/vars");
 
@@ -53,6 +54,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    referralCode: {
+      type: String,
+      default: null
+    }
   },
   {
     timestamps: true
@@ -74,6 +79,17 @@ userSchema.pre("save", async function save(next) {
     const hash = await bcrypt.hash(this.password, rounds);
     this.password = hash;
 
+    if (this.isNew) {
+      console.log('this.isNew', this.isNew)
+      let referralCode = shortid.generate(2).toUpperCase().substring(0, 6)
+      const checkExist = await this.constructor.findOne({referralCode})
+      while (checkExist) {
+        referralCode = shortid.generate(6).toUpperCase()
+      }
+      console.log('referralCode', referralCode)
+      this.referralCode = referralCode;
+    }
+
     return next();
   } catch (error) {
     return next(error);
@@ -86,7 +102,7 @@ userSchema.pre("save", async function save(next) {
 userSchema.method({
   transform() {
     const transformed = {};
-    const fields = ["id", "username", "email", "phone", "role", "emailVerify", "createdAt" ];
+    const fields = ["id", "username", "email", "phone", "role", "emailVerify", "referralCode", "createdAt" ];
 
     fields.forEach(field => {
       transformed[field] = this[field];
