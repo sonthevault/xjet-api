@@ -54,7 +54,7 @@ exports.register = async (req, res, next) => {
       });
       var mailOptions = {
         from: {
-          email: "noreply@xjet.io",
+          address: "noreply@xjet.io",
 					name: "XJET.io"
         },
         to: user.email,
@@ -211,7 +211,7 @@ exports.forgotPassword = async (req, res, next) => {
       });
       var mailOptions = {
         from: {
-          email: "noreply@xjet.io",
+          address: "noreply@xjet.io",
 					name: "XJET.io"
         },
         to: user.email,
