@@ -39,6 +39,7 @@ exports.register = async (req, res, next) => {
     // Create a verification token for this user
     var verifyToken = new VerifyToken({
       userId: user._id,
+      type: "confirmation",
       token: crypto.randomBytes(16).toString("hex")
     });
     const verifyTokenResult = await verifyToken.save();
@@ -140,7 +141,7 @@ exports.confirmEmail = async (req, res, next) => {
   try {
     const { token } = req.params;
     console.log(token);
-    const verifyToken = await VerifyToken.findOne({ token: token });
+    const verifyToken = await VerifyToken.findOne({ token: token, type: "confirmation" });
     if (!verifyToken) {
       return res.status(400).send({
         message:
@@ -176,3 +177,64 @@ exports.confirmEmail = async (req, res, next) => {
     return next(error);
   }
 };
+
+exports.forgotPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    console.log(email);
+    // If we found a token, find a matching user
+    const user = await User.findOne({ email });
+    if (!user)
+      return res
+        .status(400)
+        .send({ message: "Sorry! Email has not been registered yet" });
+   
+
+    // Create a verification token for this user
+    var verifyToken = new VerifyToken({
+      userId: user._id,
+      type: "forgot_password",
+      token: crypto.randomBytes(16).toString("hex")
+    });
+    const verifyTokenResult = await verifyToken.save();
+
+    if (verifyTokenResult) {
+      var transporter = nodemailer.createTransport({
+        service: "Sendgrid",
+        auth: {
+          user: process.env.SENDGRID_USERNAME,
+          pass: process.env.SENDGRID_PASSWORD
+        }
+      });
+      var mailOptions = {
+        from: "no-reply@xjet.io",
+        to: user.email,
+        subject: "Update your password",
+        html: `<p>Dear ${user.username},</p>
+          <p>
+          <div>We heard that you lost your Xjet token sale's password. Sorry about that!</div>
+          <div>But don’t worry! You can use the following link to reset your password:</div>
+          <p><a href="${process.env.WEB_URL}/reset-password?token=${verifyToken.token}">${process.env.WEB_URL}/reset-password?token=${verifyToken.token}</a></p>
+          <div>If you don’t use this link within 3 hours, it will expire. To get a new password reset link, visit <a href="https://tokensale.xjet.io/forgot-password">https://tokensale.xjet.io/forgot-password</a></div>
+          </p>
+          <p>
+          <div>Regards,</div>
+          <div>Xjet.io team</div></p>`
+      };
+      transporter.sendMail(mailOptions, function(err) {
+        if (err) {
+          return console.log({ msg: err.message });
+        }
+        console.log(
+          "A password reset link has been sent to " + user.email + "."
+        );
+      });
+    }
+
+    res
+      .status(200)
+      .send({ message: "A link to reset password has been sent to your email address. Please check it out." }); 
+  } catch (error) {
+    return next(error);
+  }
+}

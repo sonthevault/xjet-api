@@ -146,5 +146,7 @@ router.route('/google')
 router.route('/confirmation/:token')
   .get(controller.confirmEmail);
 
+router.route('/forgot-password')
+  .post(controller.forgotPassword);
 
 module.exports = router;
