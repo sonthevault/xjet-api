@@ -53,7 +53,10 @@ exports.register = async (req, res, next) => {
         }
       });
       var mailOptions = {
-        from: "no-reply@xjet.io",
+        from: {
+          email: "noreply@xjet.io",
+					name: "XJET.io"
+        },
         to: user.email,
         subject: "Account Verification Token",
         html: `<p>Dear ${user.username},</p>
@@ -207,7 +210,10 @@ exports.forgotPassword = async (req, res, next) => {
         }
       });
       var mailOptions = {
-        from: "no-reply@xjet.io",
+        from: {
+          email: "noreply@xjet.io",
+					name: "XJET.io"
+        },
         to: user.email,
         subject: "Update your password",
         html: `<p>Dear ${user.username},</p>
