@@ -30,6 +30,42 @@ referralSchema.method({
   },
 });
 
+
+/**
+ * Statics
+ */
+referralSchema.statics = {
+  /**
+   * List referrals in descending order of 'createdAt' timestamp.
+   *
+   * @param {number} skip - Number of referrals to be skipped.
+   * @param {number} limit - Limit number of referrals to be returned.
+   * @returns {Promise<Referral[]>}
+   */
+  list({ page = 1, perPage = 100, userId }) {
+    if (userId) {
+      return this.find({ userId })
+        .sort({ createdAt: -1 })
+        .skip(perPage * (page - 1))
+        .limit(perPage)
+        .exec();
+    }
+    return this.find({})
+      .sort({ createdAt: -1 })
+      .skip(perPage * (page - 1))
+      .limit(perPage)
+      .exec();
+  },
+
+  countReferrals({ userId }) {
+    if (userId) {
+      return this.count({ userId }).exec();
+    }
+
+    return this.count({}).exec();
+  },
+}
+
 /**
  * @typedef Referral
  */
