@@ -149,4 +149,7 @@ router.route('/confirmation/:token')
 router.route('/forgot-password')
   .post(controller.forgotPassword);
 
+router.route('/reset-password')
+  .post(controller.resetPassword);
+
 module.exports = router;

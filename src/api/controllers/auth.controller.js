@@ -145,7 +145,7 @@ exports.confirmEmail = async (req, res, next) => {
     if (!verifyToken) {
       return res.status(400).send({
         message:
-          "We were unable to find a valid token. Your token my have expired."
+          "Your token has expired."
       });
     }
 
@@ -234,6 +234,45 @@ exports.forgotPassword = async (req, res, next) => {
     res
       .status(200)
       .send({ message: "A link to reset password has been sent to your email address. Please check it out." }); 
+  } catch (error) {
+    return next(error);
+  }
+}
+
+
+
+exports.resetPassword = async (req, res, next) => {
+  try {
+    const { password, confirm_password, token } = req.body;
+    
+    const verifyToken = await VerifyToken.findOne({ token, type: "forgot_password" });
+    // If we found a token, find a matching user
+    if (!verifyToken) {
+      return res.status(400).send({
+        message:
+          "Your token has expired."
+      });
+    }
+
+    const user = await User.findById(verifyToken.userId);
+    if (!user)
+      return res
+        .status(400)
+        .send({ message: "Sorry! User doesn't exist" });
+   
+    user.password = password;
+    const savedUser = await user.save()
+
+    if (savedUser) {
+      res
+      .status(200)
+      .send({ message: "Password has been reset successfully." }); 
+    } else {
+      res
+      .status(400)
+      .send({ message: "An error has been occurred. Please contact to admin" }); 
+    }
+    
   } catch (error) {
     return next(error);
   }
