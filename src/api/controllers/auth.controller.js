@@ -3,6 +3,7 @@ const httpStatus = require("http-status");
 const User = require("../models/user.model");
 const RefreshToken = require("../models/refreshToken.model");
 const VerifyToken = require("../models/verifyToken.model");
+const Referral = require("../models/referral.model");
 const moment = require("moment-timezone");
 const { jwtExpirationInterval } = require("../../config/vars");
 const { omit } = require("lodash");
@@ -31,8 +32,23 @@ function generateTokenResponse(user, accessToken) {
  */
 exports.register = async (req, res, next) => {
   try {
-    const userData = omit(req.body, "role");
+    const userData = omit(req.body, "role", "ref");
+    const { ref } = req.body
     const user = await new User(userData).save();
+    if (user && ref) {
+      const sourceUser = await User.findOne({ referralCode: ref}) 
+      if (sourceUser) {
+        const referral = new Referral({
+          userId: sourceUser._id,
+          email: user.email,
+        })
+
+        await referral.save()
+      } else {
+        res.status(httpStatus.NOT_FOUND);
+        return res.json({ message: "Invalid referral code" });
+      }
+    }
     const userTransformed = user.transform();
     const token = generateTokenResponse(user, user.token());
 

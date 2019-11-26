@@ -15,6 +15,7 @@ const { env, jwtSecret, jwtExpirationInterval } = require("../../config/vars");
  * User Roles
  */
 const roles = ["user", "admin"];
+const userStatuses = ["active", "inactive", "terminated"];
 
 
 /**
@@ -50,6 +51,11 @@ const userSchema = new mongoose.Schema(
       enum: roles,
       default: "user"
     },
+    status: {
+      type: String,
+      enum: userStatuses,
+      default: "active"
+    },
     emailVerify: {
       type: Boolean,
       default: false,
@@ -80,13 +86,11 @@ userSchema.pre("save", async function save(next) {
     this.password = hash;
 
     if (this.isNew) {
-      console.log('this.isNew', this.isNew)
       let referralCode = shortid.generate(2).toUpperCase().substring(0, 6)
       const checkExist = await this.constructor.findOne({referralCode})
       while (checkExist) {
         referralCode = shortid.generate(6).toUpperCase()
       }
-      console.log('referralCode', referralCode)
       this.referralCode = referralCode;
     }
 
