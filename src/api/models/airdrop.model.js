@@ -6,7 +6,7 @@ const AirdropTypes = ["referral", "commission"]
 const airdropSchema = new mongoose.Schema(
   {
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    source: { type: String },
+    source: { type: String, default: null },
     amount: { type: Number },
     type: { type: String, enum: AirdropTypes, default: "commission"}
   },

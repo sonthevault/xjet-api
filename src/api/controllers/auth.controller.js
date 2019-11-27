@@ -4,6 +4,7 @@ const User = require("../models/user.model");
 const RefreshToken = require("../models/refreshToken.model");
 const VerifyToken = require("../models/verifyToken.model");
 const Referral = require("../models/referral.model");
+const Airdrop = require("../models/airdrop.model");
 const moment = require("moment-timezone");
 const { jwtExpirationInterval } = require("../../config/vars");
 const { omit } = require("lodash");
@@ -190,11 +191,29 @@ exports.confirmEmail = async (req, res, next) => {
         });
     }
 
-    const referral = await Referral.findOne({ email: user.email })
-    if (referral) {
-      referral.status = 'active'
-      await referral.save()
-    }
+    const bonusToNewUser = new Airdrop({
+      userId: user.id,
+      amount: 50,
+      type: 'referral'
+    })
+    bonusToNewUser.save()
+
+    Referral.findOne({ email: user.email }).then(referral => {
+      if (referral) {
+        referral.status = 'active'
+        referral.save().then((updatedReferral) => {
+          if (updatedReferral) {
+            const bonusToRefOwner = new Airdrop({
+              userId: referral.userId,
+              source: referral.email,
+              amount: 100,
+              type: 'commission'
+            })
+            bonusToRefOwner.save()
+          }
+        })
+      }
+    })
 
     res
       .status(200)
