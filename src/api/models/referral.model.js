@@ -7,7 +7,7 @@ const referralSchema = new mongoose.Schema(
   {
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     email: { type: String, required: true },
-    status: { type: String, enum: ReferralUserStatuses, default: "active"}
+    status: { type: String, enum: ReferralUserStatuses, default: "inactive"}
   },
   {
     timestamps: true

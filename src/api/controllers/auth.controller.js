@@ -189,6 +189,13 @@ exports.confirmEmail = async (req, res, next) => {
           message: "Unknown error has been occurred. Please contact to admin"
         });
     }
+
+    const referral = await Referral.findOne({ email: user.email })
+    if (referral) {
+      referral.status = 'active'
+      await referral.save()
+    }
+
     res
       .status(200)
       .send({ message: "The account has been verified. Please sign in for the next process." });
