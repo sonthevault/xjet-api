@@ -4,6 +4,7 @@ const authRoutes = require('./auth.route');
 const mediaRoutes = require('./media.route');
 const orderRoutes = require('./order.route');
 const referralRoutes = require('./referral.route');
+const airdropRoutes = require('./airdrop.route');
 
 const router = express.Router();
 
@@ -22,5 +23,7 @@ router.use('/auth', authRoutes);
 router.use('/media', mediaRoutes);
 router.use('/orders', orderRoutes);
 router.use('/referrals', referralRoutes);
+router.use('/airdrops', airdropRoutes);
+
 
 module.exports = router;
