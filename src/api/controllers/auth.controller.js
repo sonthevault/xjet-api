@@ -194,7 +194,7 @@ exports.confirmEmail = async (req, res, next) => {
     const bonusToNewUser = new Airdrop({
       userId: user.id,
       amount: 50,
-      type: 'referral'
+      type: 'register'
     })
     bonusToNewUser.save()
 
@@ -207,7 +207,7 @@ exports.confirmEmail = async (req, res, next) => {
               userId: referral.userId,
               source: referral.email,
               amount: 100,
-              type: 'commission'
+              type: 'referral'
             })
             bonusToRefOwner.save()
           }

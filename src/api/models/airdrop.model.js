@@ -1,14 +1,14 @@
 /*eslint-disable */
 const mongoose = require("mongoose");
 
-const AirdropTypes = ["referral", "commission"]
+const AirdropTypes = ["register", "referral"]
 
 const airdropSchema = new mongoose.Schema(
   {
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     source: { type: String, default: null },
     amount: { type: Number },
-    type: { type: String, enum: AirdropTypes, default: "commission"}
+    type: { type: String, enum: AirdropTypes, default: "referral"}
   },
   {
     timestamps: true
